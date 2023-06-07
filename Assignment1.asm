@@ -1,5 +1,5 @@
 ;Display Accepted Numbers
-
+;Write an X86/64 ALP to accept five 64 bit Hexadecimal numbers from user and store them in an array and display the accepted numbers
 section .data
 
 title db 10,"This is the code for checking the count of positive and negative nos.",10
