@@ -1,73 +1,107 @@
-; Find the largest of given numbers
+; Find the largest of given numbers.
+;Write an X86/64 ALP to find the largest of given Byte/Word/Dword/64-bit numbers.
 
 section .data
-%macro print 2
-    mov rax,1
-    mov rdi,1
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
 
-%macro read 2
-    mov rax,0
-    mov rdi,0
-    mov rsi,%1
-    mov rdx,%2
-    syscall
-%endmacro
+	%macro write 2
+	mov rax,1
+	mov rdi,1
+	mov rsi,%1
+	mov rdx,%2
+	syscall
+	%endmacro
 
-name db 10,"Enter the string needed : ",10
-l1 equ $-name
+	array db 10h,20h,30h,40h,70h
 
-display db 10,"The entered string from user is : ",10
-l2 equ $-display
+	msg1 db 10,"ALP to find the largest of the given no. in an array",10,13
+	len1 equ $-msg1
 
-length db 10,"The length of the entered string is  : ",10
-l3 equ $-length
+	msg2 db 10,"The contents of the array are : ",10,13
+	len2 equ $-msg2
 
-newline db 10
+	msg3 db 10,"The largest no. from the array is : ",10,13
+	len3 equ $-msg3
+
+	space db 10," "
+
+	newline db 10," "
+
+	
+	
 
 section .bss
-buffer resb 50
-size equ $-buffer
-count resd 1
-dispnum resb 16 ; Increase buffer size to accommodate 16 bytes
 
-section .text
-global _start:
+	counter resb 1
+	result resb 4
+
+
+section .txt
+
+global _start
 
 _start:
-    print name,l1
-    read buffer,size
-    mov [count],rax
-    dec rax
-    print display,l2
-    print buffer,[count]
-    call disp
+	write msg1,len1
+	write msg2,len2
 
-Exit:
-    mov rax,60
-    xor rbx,rbx ; Set rbx to 0
-    syscall
+	mov byte[counter],05
+	mov rsi,array
 
-Termination:
-    print newline,1 ; Move newline print statement after Exit label for clarity
-    ret
+	next:
+		mov al,[rsi]
+		push rsi
+		call disp
+		write space,1
+		pop rsi
+		inc rsi
+		dec byte[counter]
+		jnz next
 
-disp:
-    mov rsi,dispnum+15
-    mov rax,[count]
-    mov rcx,16
-    dec rax
-up1:
-    mov rdx,0
-    mov rbx,10
-    div rbx
-    add dl,30h
-    mov [rsi],dl
-    dec rsi
-    loop up1
-    print length,l3
-    print dispnum,16 ; Remove space before dispnum
-    ret
+	write msg3,len3
+
+	mov byte[counter],05
+	mov rsi,array
+	mov al,0
+	
+	repeat:
+		cmp al,[rsi]
+		jg skip
+		mov al,[rsi]
+
+	skip:
+		inc rsi
+		dec byte[counter]
+		jnz repeat
+		
+	call disp
+	
+	exit:
+		mov rax,60
+		mov rdi,0
+		syscall
+
+	disp:
+		mov bl,al
+		mov rdi,result
+		mov cx,02
+
+	up1:
+		rol bl,04
+		mov al,bl
+		and al,0fh
+		cmp al,09h
+		jg add_37
+		add al,30h
+		jmp skip1
+
+	add_37:
+		add al,37h
+
+	skip1:
+		mov [rdi],al
+		inc rdi
+		dec cx
+		jnz up1
+		write result,02
+		write newline,02
+
+		ret
