@@ -11,7 +11,6 @@ l2 equ $-mesg1
 mesg2 db 10,"The negative nos. are : ",10
 l3 equ $-mesg2
 
-
 %macro print 2
 mov rax,1
 mov rdi,1
